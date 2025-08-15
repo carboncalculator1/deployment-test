@@ -1,0 +1,119 @@
+
+<script>
+    let currentSection = 'cooking';
+    let calculationData = {};
+
+    function showSection(section) {
+        document.getElementById(currentSection).classList.remove('active');
+        document.getElementById('results').classList.remove('active');
+        document.getElementById(section).classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+        currentSection = section;
+    }
+
+    function updateSliderValue(slider, outputId) {
+        document.getElementById(outputId).textContent = slider.value;
+    }
+
+   
+
+    function validateInputs(inputs) {
+        for (const [key, value] of Object.entries(inputs)) {
+            if (isNaN(value) || value < 0) {
+                alert(`Please enter a valid number for ${key.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function calculatecooking() {
+        const fuelType = document.getElementById('fuelTypeSelect').value;
+        const inputs = {
+            mealsNumber: parseFloat(document.getElementById('mealsNumberValue').textContent),
+            cookingDuration: parseFloat(document.getElementById('cookingDurationValue').textContent),
+        };
+
+        // Emission factors per meal (kg CO2e)
+        const fuelFactors = {
+            'wood': 1.2,
+            'charcoal': 1.0,
+            'lpg': 0.7,
+            'electricity': 0.1
+        };
+
+        const fuelFactor = fuelFactors[fuelType] || 0.8;
+
+        if (!validateInputs(inputs)) return;
+
+        
+        const results = {
+            mealsNumber: inputs.mealsNumber * fuelFactor * 30,
+            cookingDuration: inputs.cookingDuration * 0.4 * 30
+        };
+
+        results.total = Object.values(results).reduce((sum, val) => sum + val, 0);
+        calculationData = { ...inputs, ...results };
+        displayResults(results);
+    }
+
+  
+    function displayResults(data) {
+        document.getElementById(currentSection).classList.remove('active');
+
+        // Update the results with the calculated data
+        const totalKg = data.total.toFixed(1);
+        const totalTonnes = (data.total / 1000).toFixed(1);
+        const dailyAverage = (data.total / 30).toFixed(1);
+
+        // Avoid division by zero
+        const safePercentage = (value) => {
+            if (totalKg === 0) return 0;
+            return (value / totalKg) * 100;
+        };
+
+        // Clear previous results
+        const summaryContainer = document.querySelector('.emissions-summary');
+        summaryContainer.innerHTML = '';
+
+        // Add new results based on current section
+        if (currentSection === 'cooking') {
+            summaryContainer.innerHTML = `
+                <div class="emissions-category">
+                    <div class="category-name">Cooking Emissions</div>
+                    <div class="category-value">${data.mealsNumber.toFixed(1)} kg CO₂e/month</div>
+                    <div class="category-percentage">${safePercentage(data.mealsNumber).toFixed(1)}% of total</div>
+                </div>
+                <div class="emissions-category">
+                    <div class="category-name">Duration Emissions</div>
+                    <div class="category-value">${data.cookingDuration.toFixed(1)} kg CO₂e/month</div>
+                    <div class="category-percentage">${safePercentage(data.cookingDuration).toFixed(1)}% of total</div>
+                </div>
+            `;
+        } 
+        // Update total emissions (show in tonnes for annual total)
+        const monthlyTonnes = (data.total / 1000).toFixed(1);
+        document.getElementById('totalEmissions').textContent = `Total Annual Emissions: ${monthlyTonnes} Tonnes CO₂e/month`;
+        document.getElementById('dailyAverage').textContent = `Daily Average: ${dailyAverage} kg CO₂e/day`;
+
+        document.getElementById('results').classList.add('active');
+        document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function getIconForCategory(category) {
+        const icons = {
+            'mealsNumber': 'fas fa-car',
+            'Waste': 'fas fa-trash',
+            'cookingDuration': 'fas fa-bolt',
+            'Meals': 'fas fa-utensils',
+            'Materials': 'fas fa-cubes',
+            'Machinery': 'fas fa-tractor',
+            'Transport': 'fas fa-truck',
+            'Energy': 'fas fa-plug',
+            'Water': 'fas fa-tint'
+        };
+
+        return `<i class="${icons[category] || 'fas fa-circle'}"></i>`;
+    }
+</script>

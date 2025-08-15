@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNZA Carbon Calculator Yanga</title>
+    <link rel="stylesheet" href="style_unza.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "rknx7hxfio");
+    </script>
+
+</head>
+<body>
+<div class="main-container">
+    <div class="container">
+        <h1>
+            <i class="fas fa-leaf"></i>
+           UNZA Carbon Calculator Yanga
+        </h1>
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="showSection('cooking')">
+                <i class="fas fa-user"></i>
+                Cooking
+            </button>
+           
+        </div>
+
+        <div id="cooking" class="section active">
+            <div class="verification-banner">
+                <i class="fas fa-check-circle"></i>
+                Verified using Gold Standard & CDM methodologies
+            </div>
+            <div class="input-group">
+                <label>
+                    <i class="fas fa-utensils icon"></i>
+                    Meals Cooked per Day
+                    <span class="tooltip">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">Number of meals cooked daily</span>
+                    </span>
+                </label>
+                <div class="slider-container">
+                    <input type="range" class="slider" min="0" max="20" value="3" step="1" oninput="updateSliderValue(this, 'mealsNumberValue')">
+                    <span class="slider-value" id="mealsNumberValue">3</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>
+                    <i class="fas fa-fire icon"></i>
+                    Fuel Type
+                    <span class="tooltip">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">Primary cooking fuel used</span>
+                    </span>
+                </label>
+                <select id="fuelTypeSelect" style="background:  rgba(0, 0, 0, 0.1)">
+                    <option value="wood">Wood</option>
+                    <option value="charcoal">Charcoal</option>
+                    <option value="lpg">LPG</option>
+                    <option value="electricity">Electricity</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>
+                    <i class="fas fa-clock icon"></i>
+                    Daily Cooking Duration (hours)
+                    <span class="tooltip">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="tooltiptext">Average daily cooking time</span>
+                    </span>
+                </label>
+                <div class="slider-container">
+                    <input type="range" class="slider" min="0" max="8" value="2.5" step="0.1" oninput="updateSliderValue(this, 'cookingDurationValue')">
+                    <span class="slider-value" id="cookingDurationValue">2.5</span>
+                </div>
+            </div>
+            <button class="calculate-btn" onclick="calculatecooking()">
+                <i class="fas fa-calculator"></i>
+                Calculate Cooking Emissions
+            </button>
+        </div>
+
+        
+        <div id="results" class="section">
+            <div class="results-header">
+                <h2>Emissions Summary</h2>
+            </div>
+
+            <div class="emissions-summary">
+                <div class="emissions-category">
+                    <div class="category-name">Materials</div>
+                    <div class="category-value" id="materialsValue">67.0 kg CO₂e/month</div>
+                    <div class="category-percentage" id="materialsPercentage">20.1% of total</div>
+                </div>
+                <div class="emissions-category">
+                    <div class="category-name">Machinery</div>
+                    <div class="category-value" id="machineryValue">210.6 kg CO₂e/month</div>
+                    <div class="category-percentage" id="machineryPercentage">63.2% of total</div>
+                </div>
+                <div class="emissions-category">
+                    <div class="category-name">cookingDuration</div>
+                    <div class="category-value" id="cookingDurationValue">39.0 kg CO₂e/month</div>
+                    <div class="category-percentage" id="cookingDurationPercentage">11.7% of total</div>
+                </div>
+                <div class="emissions-category">
+                    <div class="category-name">Transport</div>
+                    <div class="category-value" id="transportValue">16.4 kg CO₂e/month</div>
+                    <div class="category-percentage" id="transportPercentage">4.9% of total</div>
+                </div>
+            </div>
+
+            <div class="total-emissions" id="totalEmissions">Total Emissions: 333.0 kg CO₂e/month</div>
+            <div class="daily-average" id="dailyAverage">Daily Average: 10.9 kg CO₂e/day</div>
+        </div>
+    </div>
+
+    <!-- Sidebar for Offset Options -->
+    <div class="sidebar">
+        <h2><i class="fas fa-seedling"></i> Offset Your Carbon Footprint</h2>
+        <div class="offset-option">
+            <h3><i class="fas fa-tree"></i> Plant Trees</h3>
+            <p>Support local reforestation projects. One tree offsets approximately 25kg of CO2 annually.</p>
+            <a href="https://www.facebook.com/share/p/16fVrQh3vP/" class="offset-btn">Plant Now</a>
+        </div>
+        <div class="offset-option">
+            <h3><i class="fas fa-recycle"></i> Eco Waste Management</h3>
+            <p>Fund innovative recycling programs and waste reduction initiatives.</p>
+            <a href="https://www.facebook.com/share/p/19ZKjJYUWH/" class="offset-btn">Support</a>
+        </div>
+        <div class="offset-option">
+            <h3><i class="fas fa-building"></i> Green Building Projects</h3>
+            <p>Support sustainable building practices and renewable energy infrastructure.</p>
+            <a href="https://www.facebook.com/share/v/16ZgiYnazm/" class="offset-btn">Support</a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Partners Section -->
+<div class="partners-section">
+    <h2>Our Partners</h2>
+    <div class="partners-scroll">
+        <div class="partners-scroll-inner">
+            <div class="partner">
+                <img src="/images/kmobile.png" alt="KMobile Hub">
+                <p>KMobile Hub</p>
+            </div>
+            <div class="partner">
+                <img src="/images/bwana.jpeg" alt="KMobile Hub">
+                <p>Bwana Lifestyle</p>
+            </div>
+	    <div class="partner">
+                <img src="/images/musika.jpeg" alt="KMobile Hub">
+                <p>Musika</p>
+            </div>
+
+            <!-- Duplicate partners to create infinite scroll effect -->
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Add this right before the closing </body> tag -->
+<!-- Add this before the closing </body> tag -->
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="social-buttons" aria-hidden="false">
+      <a href="https://www.facebook.com/share/p/1EhnQWLuTE/" target="_blank" class="facebook-btn" aria-label="Follow us on Facebook">
+        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+        <span>Follow Us</span>
+      </a>
+
+      <a href="mailto:info@climateyanga.com" class="gmail-btn" aria-label="Contact us by email">
+        <i class="fas fa-envelope" aria-hidden="true"></i>
+        <span>Contact Us</span>
+      </a>
+    </div>
+	  
+    <p class="footer-text">A climate awareness and action initiative by: <strong>Carbon Calculator Yanga Foundation, © 2025</strong></p>
+  </div>
+</footer>
+
+
+
+   
+
+
+<script type="module" src="script_unza.js"></script>
+</body>
+</html>
