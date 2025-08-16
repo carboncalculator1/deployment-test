@@ -117,18 +117,23 @@
   
 
   <script>
+	  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+	  import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     async function loadDashboard() {
   // Get Firebase from global object 
 		const { db, collection, getDocs } = window.firebaseDeps; 
 		// Get all docs from cookingResults 
 		const user = window.firebaseDeps.auth.currentUser;
-		if (!user) {
-  		document.getElementById('dashboardTotal').textContent = "Please log in.";
- 		 return;
-		}
-		const q = query(collection(db, "users"), where("uid", "==", user.uid));
-		const snapshot = await getDocs(q);
-		let emissions = []; 
+		const auth = getAuth();
+
+		onAuthStateChanged(auth, async (user) => {
+  			if (!user) {
+    			document.getElementById("dashboardTotal").textContent = "Please log in.";
+   		 	return;
+ 		 }
+  			const reportsRef = collection(db, "users", user.uid, "reports");
+  			const snapshot = await getDocs(reportsRef);
+  			let emissions = []; 
 		snapshot.forEach(doc => { 
 			let data = doc.data(); 
 			if (data.totalEmissions) { 
@@ -139,6 +144,9 @@
 			document.getElementById('dashboardTotal').textContent = "No emissions recorded yet."; 
 			return; 
 		}
+		});
+
+		
 
 		
   // Total emissions
@@ -240,6 +248,7 @@
 <script src="script_unza.js" defer></script>
 </body>
 </html>
+
 
 
 
