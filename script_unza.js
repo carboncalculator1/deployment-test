@@ -116,7 +116,6 @@ function displayResults(data) {
 }
 
 //Update your dashboard to read from Firestore, not localStorage.
-
 async function loadDashboard() {
   const user = auth.currentUser;
   if (!user) {
@@ -157,6 +156,7 @@ function getIconForCategory(category) {
 
     return `<i class="${icons[category] || 'fas fa-circle'}"></i>`;
 }
+
 
 
 
