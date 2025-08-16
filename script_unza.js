@@ -113,6 +113,34 @@ function displayResults(data) {
 
 }
 
+//Update your dashboard to read from Firestore, not localStorage.
+import { getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+async function loadDashboard() {
+  const user = auth.currentUser;
+  if (!user) {
+    document.getElementById("dashboardTotal").textContent = "Please log in.";
+    return;
+  }
+
+  const q = query(collection(db, "users"), where("uid", "==", user.uid));
+  const querySnapshot = await getDocs(q);
+
+  let total = 0;
+  let count = 0;
+  querySnapshot.forEach(doc => {
+    total += doc.data().totalEmissions;
+    count++;
+  });
+
+  if (count === 0) {
+    document.getElementById("dashboardTotal").textContent = "No emissions recorded yet.";
+  } else {
+    document.getElementById("dashboardTotal").textContent =
+      `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${count} report(s))`;
+  }
+}
+
 function getIconForCategory(category) {
     const icons = {
         'mealsNumber': 'fas fa-car',
@@ -128,6 +156,7 @@ function getIconForCategory(category) {
 
     return `<i class="${icons[category] || 'fas fa-circle'}"></i>`;
 }
+
 
 
 
