@@ -79,21 +79,8 @@
         window.location.href = "dashboard.html";
       } catch (err) {
         let message;
-    switch (err.code) {
-      case "auth/user-not-found":
-      case "auth/wrong-password":
         message = "Invalid email or password. Please try again.";
-        break;
-      case "auth/invalid-email":
-        message = "Please enter a valid email address.";
-        break;
-      case "auth/too-many-requests":
-        message = "Too many failed attempts. Please try again later.";
-        break;
-      default:
-        message = "Login failed. Please check your details and try again.";
-    }
-    document.getElementById("loginError").textContent = message;
+        document.getElementById("loginError").textContent = message;
       }
     });
 
@@ -180,6 +167,7 @@
   </style>
 </body>
 </html>
+
 
 
 
