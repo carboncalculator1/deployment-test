@@ -22,7 +22,7 @@
 
     <!-- Dashboard Body -->
     <div id="dashboardContent" class="section active">
-      <h2>Total Emissions</h2>
+      <h2>Total Annual Emissions</h2>
       <div class="emissions-summary">
         <div class="total-emissions" id="dashboardTotal">Loading...</div>
       </div>
@@ -129,7 +129,7 @@
       new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: storedEmissions.map((_, i) => `Day ${i + 1}`),
+          labels: storedEmissions.map((_, i) => `Year ${i + 1}`),
           datasets: [{
             label: 'Emissions (kg CO₂e)',
             data: storedEmissions,
@@ -144,7 +144,7 @@
             legend: { display: false },
             title: {
               display: true,
-              text: 'Daily Emissions Records'
+              text: 'Year Emissions Records'
             }
           },
           scales: {
@@ -158,7 +158,7 @@
             x: {
               title: {
                 display: true,
-                text: 'Days'
+                text: 'Year'
               }
             }
           }
