@@ -3,6 +3,8 @@ const { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth } =
 let currentSection = 'cooking';
 let calculationData = {};
 
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 function showSection(section) {
     document.getElementById(currentSection).classList.remove('active');
     document.getElementById('results').classList.remove('active');
@@ -209,6 +211,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("dashboardTotal").textContent = "Please log in.";
   }
 });
+
 
 
 
