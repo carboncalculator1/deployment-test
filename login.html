@@ -6,9 +6,9 @@
   <title>Login - UNZA Carbon Calculator Yanga</title>
   <link rel="stylesheet" href="style_unza.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore-compat.js"></script>
 </head>
 <body>
   <div class="main-container">
@@ -42,7 +42,7 @@
   </div>
 
   <script>
-    // Firebase Config (you already set this up, paste your config here)
+    // ✅ Use your Firebase config here
     const firebaseConfig = {
     apiKey: "AIzaSyCI0zbu9vXg4j26loOHVExJSoEee-7E7LU",
     authDomain: "unza-s-site.firebaseapp.com",
@@ -52,7 +52,7 @@
     appId: "1:691190316366:web:da52c76c6f6380faccb21f",
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
