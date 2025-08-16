@@ -55,6 +55,7 @@ function calculatecooking() {
 function displayResults(data) {
     document.getElementById(currentSection).classList.remove('active');
 
+
     const totalKg = data.total.toFixed(1);
     const dailyAverage = (data.total / 30).toFixed(1);
 
@@ -92,6 +93,28 @@ function displayResults(data) {
     let storedEmissions = JSON.parse(localStorage.getItem('emissionReports')) || [];
     storedEmissions.push(data.total);
     localStorage.setItem('emissionReports', JSON.stringify(storedEmissions));
+
+    // Save results to Firestore for logged-in user
+    if (window.firebaseDeps && window.firebaseDeps.auth.currentUser) {
+    const { db, collection, addDoc, serverTimestamp, auth } = window.firebaseDeps;
+    const user = auth.currentUser;
+
+    addDoc(collection(db, "userCalculations"), {
+        uid: user.uid,
+        email: user.email,
+        section: currentSection, // e.g. "cooking"
+        inputs: calculationData, // all input + result values
+        totalEmissions: data.total,
+        createdAt: serverTimestamp()
+    })
+    .then(() => {
+        console.log("Calculation saved for user:", user.email);
+    })
+    .catch(err => {
+        console.error("Error saving calculation:", err);
+    });
+}
+
 
 }
 
