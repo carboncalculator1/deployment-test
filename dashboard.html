@@ -1,248 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home - UNZA Carbon Calculator Yanga</title>
-
   <link rel="stylesheet" href="style_unza.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Chart.js (global) -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Initialize Firebase (module) - placed early so other scripts can rely on window.firebaseDeps -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      query,
-      where,
-      doc,
-      setDoc,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCI0zbu9vXg4j26loOHVExJSoEee-7E7LU",
-      authDomain: "unza-s-site.firebaseapp.com",
-      projectId: "unza-s-site",
-      storageBucket: "unza-s-site.firebasestorage.app",
-      messagingSenderId: "691190316366",
-      appId: "1:691190316366:web:da52c76c6f6380faccb21f",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    // Expose a minimal deps object that non-module scripts can use.
-    window.firebaseDeps = {
-      db,
-      auth,
-      // Firestore helpers (expose functions you need)
-      collection,
-      addDoc,
-      getDocs,
-      query,
-      where,
-      doc,
-      setDoc,
-      serverTimestamp
-    };
-
-    // Create a promise that resolves once auth state is known.
-    window.firebaseReady = new Promise((resolve) => {
-      onAuthStateChanged(auth, (user) => {
-        // store current user globally for convenience
-        window.currentFirebaseUser = user || null;
-        resolve(user || null);
-      });
-    });
-
-    // Expose a safe helper for saving a report from non-module scripts
-    window.saveReportForCurrentUser = async function saveReportForCurrentUser(calculationData, total) {
-      const user = window.currentFirebaseUser;
-      if (!user) throw new Error("No authenticated user.");
-      // Save into subcollection users/{uid}/reports
-      const reportsCol = collection(db, "users", user.uid, "reports");
-      return addDoc(reportsCol, {
-        inputs: calculationData,
-        totalEmissions: total,
-        createdAt: serverTimestamp()
-      });
-    };
-
-    // Optional: a helper to set a single 'latest report' per user
-    window.setLatestReportForUser = async function(calculationData, total) {
-      const user = window.currentFirebaseUser;
-      if (!user) throw new Error("No authenticated user.");
-      return setDoc(doc(db, "users", user.uid), {
-        uid: user.uid,
-        email: user.email || null,
-        latestReport: { inputs: calculationData, totalEmissions: total, updatedAt: serverTimestamp() }
-      }, { merge: true });
-    };
-
-    // Logout helper available globally
-    window.firebaseSignOut = async function() {
-      return signOut(auth);
-    };
-
-  </script>
 </head>
 <body>
-  <div class="main-container">
+<div class="main-container">
     <div class="container">
-      <h1><i class="fas fa-leaf"></i> UNZA Carbon Calculator Yanga - Home</h1>
-      <button id="logoutBtn" class="btn-logout">Logout</button>
+    <!-- App Bar -->
+    <h1>
+      <i class="fas fa-leaf"></i>
+      UNZA Carbon Calculator Yanga - Home
+    </h1>
 
-      <div id="dashboardContent" class="section active">
-        <h2>Total Annual Emissions</h2>
-        <div class="emissions-summary">
-          <div class="total-emissions" id="dashboardTotal">Loading...</div>
-        </div>
+		 <button id="logoutBtn" class="btn-logout">Logout</button>
 
-        <h2>Emissions Over Time</h2>
-        <canvas id="emissionsChart" style="max-width:100%; height:200px;"></canvas>
+		
 
-        <button class="calculate-btn" id="clearReportsBtn">
-          <i class="fas fa-trash"></i> Clear Reports
-        </button>
-
-        <button class="calculate-btn" onclick="window.location.href='index_unza.html'">
-          <i class="fas fa-calculator"></i> Start a Calculation
-        </button>
+    <!-- Dashboard Body -->
+    <div id="dashboardContent" class="section active">
+      <h2>Total Annual Emissions</h2>
+      <div class="emissions-summary">
+        <div class="total-emissions" id="dashboardTotal">Loading...</div>
       </div>
-    </div>
 
-    <div class="sidebar">
-      <!-- ... your sidebar content ... -->
+      <!-- New Statistics Section -->
+      <h2>Emissions Over Time</h2>
+      <canvas id="emissionsChart" style="max-width: 100%; height: 100px;"></canvas>
+
+      <!-- Buttons -->
+      <button class="calculate-btn" onclick="clearReports()">
+        <i class="fas fa-trash"></i> Clear Reports
+      </button>
+
+      <button class="calculate-btn" onclick="window.location.href='index_unza.html'">
+        <i class="fas fa-calculator"></i> Start a Calculation
+      </button>
     </div>
   </div>
 
-  <footer class="site-footer">
-    <div class="footer-content">
-      <div class="social-buttons">
-        <a href="https://www.facebook.com/share/p/1EhnQWLuTE/" target="_blank" class="facebook-btn">
-          <i class="fab fa-facebook-f"></i><span>Follow Us</span>
-        </a>
-        <a href="mailto:info@climateyanga.com" class="gmail-btn">
-          <i class="fas fa-envelope"></i><span>Contact Us</span>
-        </a>
-      </div>
-      <p class="footer-text">A climate awareness and action initiative by: <strong>Carbon Calculator Yanga Foundation, © 2025</strong></p>
+  <!-- Sidebar for Offset Options -->
+    <div class="sidebar">
+        <h2><i class="fas fa-seedling"></i> Offset Your Carbon Footprint</h2>
+        <div class="offset-option">
+            <h3><i class="fas fa-tree"></i> Plant Trees</h3>
+            <p>Support local reforestation projects. One tree offsets approximately 25kg of CO2 annually.</p>
+            <a href="https://www.facebook.com/share/p/16fVrQh3vP/" class="offset-btn">Plant Now</a>
+        </div>
+        <div class="offset-option">
+            <h3><i class="fas fa-recycle"></i> Eco Waste Management</h3>
+            <p>Fund innovative recycling programs and waste reduction initiatives.</p>
+            <a href="https://www.facebook.com/share/p/19ZKjJYUWH/" class="offset-btn">Support</a>
+        </div>
+        <div class="offset-option">
+            <h3><i class="fas fa-building"></i> Green Building Projects</h3>
+            <p>Support sustainable building practices and renewable energy infrastructure.</p>
+            <a href="https://www.facebook.com/share/v/16ZgiYnazm/" class="offset-btn">Support</a>
+        </div>
+
     </div>
-  </footer>
+</div>
 
-  <!-- Inline dashboard logic (non-module). It waits for window.firebaseReady before doing Firestore operations. -->
+<!-- Partners Section -->
+<div class="partners-section">
+    <h2>Our Partners</h2>
+    <div class="partners-scroll">
+        <div class="partners-scroll-inner">
+            <div class="partner">
+                <img src="/images/kmobile.png" alt="KMobile Hub">
+                <p>KMobile Hub</p>
+            </div>
+            <div class="partner">
+                <img src="/images/bwana.jpeg" alt="KMobile Hub">
+                <p>Bwana Lifestyle</p>
+            </div>
+	    <div class="partner">
+                <img src="/images/musika.jpeg" alt="KMobile Hub">
+                <p>Musika</p>
+            </div>
+
+            <!-- Duplicate partners to create infinite scroll effect -->
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Add this right before the closing </body> tag -->
+<!-- Add this before the closing </body> tag -->
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="social-buttons" aria-hidden="false">
+      <a href="https://www.facebook.com/share/p/1EhnQWLuTE/" target="_blank" class="facebook-btn" aria-label="Follow us on Facebook">
+        <i class="fab fa-facebook-f" aria-hidden="true"></i>
+        <span>Follow Us</span>
+      </a>
+
+      <a href="mailto:info@climateyanga.com" class="gmail-btn" aria-label="Contact us by email">
+        <i class="fas fa-envelope" aria-hidden="true"></i>
+        <span>Contact Us</span>
+      </a>
+    </div>
+	  
+    <p class="footer-text">A climate awareness and action initiative by: <strong>Carbon Calculator Yanga Foundation, © 2025</strong></p>
+	 
+  </div>
+</footer>
+</div>
+  
+
   <script>
-    // keep a reference to Chart instance so we can destroy on reload
-    let _emissionsChartInstance = null;
-
-    async function loadDashboard() {
-      // Wait until firebase has initialized and auth state is known
-      await window.firebaseReady;
-      const deps = window.firebaseDeps;
-      if (!deps) {
-        document.getElementById('dashboardTotal').textContent = "Error: firebase not available.";
+    function loadDashboard() {
+      let storedEmissions = JSON.parse(localStorage.getItem('emissionReports')) || [];
+      if (storedEmissions.length === 0) {
+        document.getElementById('dashboardTotal').textContent = "No emissions recorded yet.";
         return;
       }
 
-      const user = window.currentFirebaseUser;
-      if (!user) {
-        document.getElementById('dashboardTotal').textContent = "Please log in.";
-        return;
-      }
+      // Total emissions
+      let total = storedEmissions.reduce((a, b) => a + b, 0);
+      document.getElementById('dashboardTotal').textContent =
+        `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${storedEmissions.length} report(s))`;
 
-      // Read the current user's reports subcollection
-      try {
-        const reportsRef = deps.collection(deps.db, "users", user.uid, "reports");
-        const snapshot = await deps.getDocs(reportsRef);
-
-        const emissions = [];
-        snapshot.forEach(snap => {
-          const d = snap.data();
-          const val = (d && (d.totalEmissions ?? d.totalEmission)); // fallback support
-          const n = typeof val === 'number' ? val : parseFloat(val);
-          if (!isNaN(n)) emissions.push(n);
-        });
-
-        if (emissions.length === 0) {
-          document.getElementById('dashboardTotal').textContent = "No emissions recorded yet.";
-          // clear chart if exists
-          if (_emissionsChartInstance) { _emissionsChartInstance.destroy(); _emissionsChartInstance = null; }
-          return;
-        }
-
-        const total = emissions.reduce((a,b) => a + b, 0);
-        document.getElementById('dashboardTotal').textContent =
-          `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${emissions.length} report(s))`;
-
-        // draw chart (destroy previous)
-        if (_emissionsChartInstance) {
-          _emissionsChartInstance.destroy();
-          _emissionsChartInstance = null;
-        }
-        const ctx = document.getElementById('emissionsChart').getContext('2d');
-        _emissionsChartInstance = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: emissions.map((_, i) => `Report ${i+1}`),
-            datasets: [{
-              label: 'Emissions (kg CO₂e)',
-              data: emissions,
-              // styling left as Chart.js default-ish so it remains simple
-              backgroundColor: 'rgba(75, 192, 192, 0.6)',
-              borderColor: 'rgba(75, 192, 192, 1)',
-              borderWidth: 1
-            }]
+      // Build bar chart
+      const ctx = document.getElementById('emissionsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: storedEmissions.map((_, i) => `Year ${i + 1}`),
+          datasets: [{
+            label: 'Emissions (kg CO₂e)',
+            data: storedEmissions,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Yearly Emissions Records'
+            }
           },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: { display: false },
-              title: { display: true, text: 'Emissions Records' }
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'kg CO₂e'
+              }
             },
-            scales: {
-              y: { beginAtZero: true, title: { display: true, text: 'kg CO₂e' } },
-              x: { title: { display: true, text: 'Reports' } }
+            x: {
+              title: {
+                display: true,
+                text: 'Years'
+              }
             }
           }
-        });
-
-      } catch (err) {
-        console.error("Error loading dashboard:", err);
-        document.getElementById('dashboardTotal').textContent = "Error loading dashboard (check console).";
-      }
+        }
+      });
     }
 
-    // wire logout and clear handlers (use delegated helpers provided by module)
-    document.addEventListener('click', (e) => {
-      if (e.target && (e.target.id === 'logoutBtn' || e.target.closest('#logoutBtn'))) {
-        if (window.firebaseSignOut) window.firebaseSignOut().catch(err => console.error("Sign out error:", err));
-      }
-      if (e.target && (e.target.id === 'clearReportsBtn' || e.target.closest('#clearReportsBtn'))) {
-        // NOTE: this only clears local chart display; to remove DB reports you must delete docs in Firestore.
-        document.getElementById('dashboardTotal').textContent = "All reports cleared.";
-        if (_emissionsChartInstance) { _emissionsChartInstance.destroy(); _emissionsChartInstance = null; }
-        // optionally reload after clearing UI: loadDashboard();
-      }
-    });
+    function clearReports() {
+      localStorage.removeItem('emissionReports');
+      document.getElementById('dashboardTotal').textContent = "All reports cleared.";
+      document.getElementById('emissionsChart').replaceWith(document.createElement("canvas")); 
+      // Reset chart
+      let canvas = document.createElement("canvas");
+      canvas.id = "emissionsChart";
+      canvas.style.maxWidth = "100%";
+      canvas.style.height = "300px";
+      document.querySelector("#dashboardContent").insertBefore(canvas, document.querySelector(".calculate-btn"));
+    }
 
-    // Ensure we call loadDashboard after DOM is parsed (it will itself wait for firebaseReady)
-    document.addEventListener('DOMContentLoaded', () => {
-      loadDashboard().catch(err => console.error(err));
-    });
-
+    window.onload = loadDashboard;
   </script>
 
-  <!-- Your main app JS (deferred) - keep this last so it can rely on window.firebaseDeps & helpers -->
-  <script src="script_unza.js" defer></script>
+	<!-- signout button and storage -->
+	<script type="module">
+  // Import the Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCI0zbu9vXg4j26loOHVExJSoEee-7E7LU",
+    authDomain: "unza-s-site.firebaseapp.com",
+    projectId: "unza-s-site",
+    storageBucket: "unza-s-site.firebasestorage.app",
+    messagingSenderId: "691190316366",
+    appId: "1:691190316366:web:da52c76c6f6380faccb21f",
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // Logout button
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    signOut(auth).then(() => {
+      window.location.href = "login.html";
+    }).catch((error) => {
+      console.error("Error logging out:", error);
+      alert("Error logging out. Check console for details.");
+    });
+  });
+	// expose for your non-module script.js
+  window.firebaseDeps = { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth };
+</script>
+
+<script src="script_unza.js" defer></script>
 </body>
 </html>
+
+
+
+
+
