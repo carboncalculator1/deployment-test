@@ -188,13 +188,27 @@
 
 	<!-- signout button -->
 	<script type="module">
+  // Import the Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  const auth = getAuth();
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCI0zbu9vXg4j26loOHVExJSoEee-7E7LU",
+    authDomain: "unza-s-site.firebaseapp.com",
+    projectId: "unza-s-site",
+    storageBucket: "unza-s-site.firebasestorage.app",
+    messagingSenderId: "691190316366",
+    appId: "1:691190316366:web:da52c76c6f6380faccb21f",
+  };
 
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Logout button
   document.getElementById("logoutBtn").addEventListener("click", () => {
     signOut(auth).then(() => {
-      // Redirect to login
       window.location.href = "login.html";
     }).catch((error) => {
       console.error("Error logging out:", error);
@@ -202,9 +216,9 @@
     });
   });
 </script>
-
 </body>
 </html>
+
 
 
 
