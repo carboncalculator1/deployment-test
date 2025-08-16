@@ -89,11 +89,6 @@ function displayResults(data) {
     document.getElementById('results').classList.add('active');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 
-        // Save results to localStorage for dashboard
-    let storedEmissions = JSON.parse(localStorage.getItem('emissionReports')) || [];
-    storedEmissions.push(data.total);
-    localStorage.setItem('emissionReports', JSON.stringify(storedEmissions));
-
     // Save results to Firestore for logged-in user
     if (window.firebaseDeps && window.firebaseDeps.auth.currentUser) {
     const { db, collection, addDoc, serverTimestamp, auth } = window.firebaseDeps;
@@ -133,5 +128,6 @@ function getIconForCategory(category) {
 
     return `<i class="${icons[category] || 'fas fa-circle'}"></i>`;
 }
+
 
 
