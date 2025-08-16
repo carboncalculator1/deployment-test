@@ -82,7 +82,7 @@ function displayResults(data) {
     }
 
     const monthlyTonnes = (data.total * 12 / 1000).toFixed(1);
-    document.getElementById('totalEmissions').textContent = `Total Annual Emissions: ${monthlyTonnes} Tonnes CO₂e/month`;
+    document.getElementById('totalEmissions').textContent = `Total Annual Emissions: ${monthlyTonnes} Tonnes CO₂e/Year`;
     document.getElementById('dailyAverage').textContent = `Daily Average: ${dailyAverage} kg CO₂e/day`;
 
     document.getElementById('results').classList.add('active');
