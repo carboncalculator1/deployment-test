@@ -112,6 +112,43 @@
   </script>
 
   <style>
+
+    /* Page background */
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    /* make sure the path is correct relative to this HTML file */
+    background-image: url("images/greenfield.jpg");
+    background-size: cover;          /* cover whole screen */
+    background-position: center;     /* center image */
+    background-repeat: no-repeat;
+    background-attachment: fixed;    /* optional: remove if causing issues on mobile */
+    background-color: #eaf3ea;       /* fallback color while image loads */
+  }
+
+  /* main container centers the card and provides overlay */
+  .main-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+  }
+
+  /* dark overlay on top of the background to improve contrast */
+  .main-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35); /* tweak opacity to taste */
+    z-index: 0;
+  }
+    
     .auth-container {
       max-width: 600px;
       width: 100%;
@@ -167,6 +204,7 @@
   </style>
 </body>
 </html>
+
 
 
 
