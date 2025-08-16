@@ -198,9 +198,34 @@
 </footer>
 
 
+<script type="module">
+  // Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCI0zbu9vXg4j26loOHVExJSoEee-7E7LU",
+    authDomain: "unza-s-site.firebaseapp.com",
+    projectId: "unza-s-site",
+    storageBucket: "unza-s-site.firebasestorage.app",
+    messagingSenderId: "691190316366",
+    appId: "1:691190316366:web:da52c76c6f6380faccb21f",
+  };
+
+  // Init
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  // expose for your non-module script.js
+  window.firebaseDeps = { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth };
+</script>
 
 
 <script src="script_unza.js"></script>
 </body>
 </html>
+
 
