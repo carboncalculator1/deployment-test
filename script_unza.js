@@ -123,13 +123,13 @@ async function loadDashboard() {
     return;
   }
 
-  const q = query(collection(db, "users"), where("uid", "==", user.uid));
-  const querySnapshot = await getDocs(q);
+  const reportsRef = collection(db, "users", user.uid, "reports");
+  const querySnapshot = await getDocs(reportsRef);
 
   let total = 0;
   let count = 0;
   querySnapshot.forEach(doc => {
-    total += doc.data().totalEmissions;
+    total += doc.data().totalEmissions || 0;
     count++;
   });
 
@@ -140,6 +140,7 @@ async function loadDashboard() {
       `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${count} report(s))`;
   }
 }
+
 
 function getIconForCategory(category) {
     const icons = {
@@ -156,6 +157,17 @@ function getIconForCategory(category) {
 
     return `<i class="${icons[category] || 'fas fa-circle'}"></i>`;
 }
+
+// Ensure dashboard loads when user logs in
+auth.onAuthStateChanged(user => {
+  if (user) {
+    loadDashboard();
+  } else {
+    document.getElementById("dashboardTotal").textContent = "Please log in.";
+  }
+});
+
+
 
 
 
