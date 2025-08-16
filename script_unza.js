@@ -96,7 +96,7 @@ function displayResults(data) {
     const { db, collection, addDoc, serverTimestamp, auth } = window.firebaseDeps;
     const user = auth.currentUser;
 
-    addDoc(collection(db, "users"), {
+    addDoc(collection(db, "users", user.uid, "reports"), {
         uid: user.uid,
         email: user.email,
         section: currentSection, // e.g. "cooking"
@@ -156,6 +156,7 @@ function getIconForCategory(category) {
 
     return `<i class="${icons[category] || 'fas fa-circle'}"></i>`;
 }
+
 
 
 
