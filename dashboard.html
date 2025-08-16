@@ -117,59 +117,66 @@
   
 
   <script>
-    function loadDashboard() {
-      let storedEmissions = JSON.parse(localStorage.getItem('emissionReports')) || [];
-      if (storedEmissions.length === 0) {
-        document.getElementById('dashboardTotal').textContent = "No emissions recorded yet.";
-        return;
-      }
+    async function loadDashboard() {
+  // Get Firebase from global object
+  const { db, collection, getDocs } = window.firebaseDeps;
 
-      // Total emissions
-      let total = storedEmissions.reduce((a, b) => a + b, 0);
-      document.getElementById('dashboardTotal').textContent =
-        `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${storedEmissions.length} report(s))`;
+  // Get all docs from cookingResults
+  const snapshot = await getDocs(collection(db, "users"));
 
-      // Build bar chart
-      const ctx = document.getElementById('emissionsChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: storedEmissions.map((_, i) => `Year ${i + 1}`),
-          datasets: [{
-            label: 'Emissions (kg CO₂e)',
-            data: storedEmissions,
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: {
-              display: true,
-              text: 'Yearly Emissions Records'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'kg CO₂e'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Years'
-              }
-            }
-          }
-        }
-      });
+  let emissions = [];
+  snapshot.forEach(doc => {
+    let data = doc.data();
+    if (data.totalEmission) {
+      emissions.push(data.totalEmission);
     }
+  });
+
+  if (emissions.length === 0) {
+    document.getElementById('dashboardTotal').textContent = "No emissions recorded yet.";
+    return;
+  }
+
+  // Total emissions
+  let total = emissions.reduce((a, b) => a + b, 0);
+  document.getElementById('dashboardTotal').textContent =
+    `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${emissions.length} report(s))`;
+
+  // Build bar chart
+  const ctx = document.getElementById('emissionsChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: emissions.map((_, i) => `Report ${i + 1}`),
+      datasets: [{
+        label: 'Emissions (kg CO₂e)',
+        data: emissions,
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Emissions Records from Firestore'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'kg CO₂e' }
+        },
+        x: {
+          title: { display: true, text: 'Reports' }
+        }
+      }
+    }
+  });
+}
 
     function clearReports() {
       localStorage.removeItem('emissionReports');
@@ -220,11 +227,14 @@
   });
 	// expose for your non-module script.js
   window.firebaseDeps = { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth };
+	// Run when page loads
+	window.onload = loadDashboard;
 </script>
 
 <script src="script_unza.js" defer></script>
 </body>
 </html>
+
 
 
 
