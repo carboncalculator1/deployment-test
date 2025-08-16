@@ -121,16 +121,24 @@
 
 
     function clearReports() {
-      localStorage.removeItem('emissionReports');
-      document.getElementById('dashboardTotal').textContent = "All reports cleared.";
-      document.getElementById('emissionsChart').replaceWith(document.createElement("canvas")); 
-      // Reset chart
-      let canvas = document.createElement("canvas");
-      canvas.id = "emissionsChart";
-      canvas.style.maxWidth = "100%";
-      canvas.style.height = "300px";
-      document.querySelector("#dashboardContent").insertBefore(canvas, document.querySelector(".calculate-btn"));
-    }
+  // remove stored reports in Firestore logic is separate; this is just local UI clearing
+  localStorage.removeItem('emissionReports');
+  document.getElementById('dashboardTotal').textContent = "All reports cleared.";
+
+  // destroy chart instance if exists
+  if (window.emissionsChartGlobal && typeof window.emissionsChartGlobal.destroy === 'function') {
+    try { window.emissionsChartGlobal.destroy(); } catch (e) { console.warn('Error destroying chart:', e); }
+  }
+  window.emissionsChartGlobal = null;
+
+  // Replace canvas with a fresh one (keeps same id)
+  const oldCanvas = document.getElementById('emissionsChart');
+  const canvas = document.createElement("canvas");
+  canvas.id = "emissionsChart";
+  canvas.style.maxWidth = "100%";
+  canvas.style.height = "300px";
+  oldCanvas.parentNode.replaceChild(canvas, oldCanvas);
+}
 
   </script>
 
@@ -173,6 +181,7 @@
 <script src="script_unza.js" defer></script>
 </body>
 </html>
+
 
 
 
