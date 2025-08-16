@@ -268,16 +268,3 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
