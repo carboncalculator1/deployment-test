@@ -2,6 +2,7 @@
 const { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth } = window.firebaseDeps;
 let currentSection = 'cooking';
 let calculationData = {};
+let emissionsChart = null;
 
 
 
@@ -126,14 +127,35 @@ async function loadDashboard() {
   }
 
   const reportsRef = collection(db, "users", user.uid, "reports");
+  // fetch docs (you can also use a firestore query with orderBy if you add that constraint)
   const querySnapshot = await getDocs(reportsRef);
 
   let total = 0;
   let count = 0;
+  // collect reports into an array so we can sort by timestamp if present
+  const reports = [];
+
   querySnapshot.forEach(doc => {
-    total += doc.data().totalEmissions || 0;
+    const data = doc.data() || {};
+    const val = Number(data.totalEmissions) || 0;
+
+    // try to get a timestamp in ms: prefer data.createdAt.toMillis(), fallback to doc.createTime string
+    let ts = 0;
+    if (data.createdAt && typeof data.createdAt.toMillis === 'function') {
+      ts = data.createdAt.toMillis();
+    } else if (doc.createTime) {
+      // doc.createTime may be a string; new Date(...) will parse it
+      const parsed = new Date(doc.createTime);
+      if (!isNaN(parsed)) ts = parsed.getTime();
+    }
+
+    reports.push({ val, ts });
+    total += val;
     count++;
   });
+
+  // if timestamps available, sort by ts ascending for timeline
+  reports.sort((a, b) => (a.ts || 0) - (b.ts || 0));
 
   if (count === 0) {
     document.getElementById("dashboardTotal").textContent = "No emissions recorded yet.";
@@ -141,7 +163,82 @@ async function loadDashboard() {
     document.getElementById("dashboardTotal").textContent =
       `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${count} report(s))`;
   }
+
+  // Build storedEmissions array for chart
+  const storedEmissions = reports.map(r => r.val);
+
+  // Build labels: if we have timestamps, use the year (or formatted date), otherwise use "Report N"
+  const labels = reports.map((r, idx) => {
+    if (r.ts && r.ts > 0) {
+      const d = new Date(r.ts);
+      // show year + month if several reports in same year
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    }
+    return `Report ${idx + 1}`;
+  });
+
+  // If there's an existing chart, destroy it before creating a new one
+  if (window.emissionsChartGlobal && typeof window.emissionsChartGlobal.destroy === 'function') {
+    try { window.emissionsChartGlobal.destroy(); } catch (e) { console.warn('Failed to destroy existing chart', e); }
+    window.emissionsChartGlobal = null;
+  }
+
+  // Only create chart if there is data
+  if (storedEmissions.length > 0) {
+    const canvas = document.getElementById('emissionsChart');
+    // ensure the canvas exists (if user has cleared and it was recreated)
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+
+    window.emissionsChartGlobal = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Emissions (kg CO₂e)',
+          data: storedEmissions,
+          backgroundColor: 'rgba(75, 192, 192, 0.6)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Yearly Emissions Records'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'kg CO₂e'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Reports / Date'
+            }
+          }
+        }
+      }
+    });
+  } else {
+    // no data: optionally clear the chart area
+    const canvas = document.getElementById('emissionsChart');
+    if (canvas && canvas.getContext) {
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
 }
+
 
 
 
@@ -170,6 +267,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("dashboardTotal").textContent = "Please log in.";
   }
 });
+
 
 
 
