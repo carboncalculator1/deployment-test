@@ -118,25 +118,30 @@
 
   <script>
     async function loadDashboard() {
-  // Get Firebase from global object
-  const { db, collection, getDocs } = window.firebaseDeps;
-
-  // Get all docs from cookingResults
-  const snapshot = await getDocs(collection(db, "users"));
-
-  let emissions = [];
-  snapshot.forEach(doc => {
-    let data = doc.data();
-    if (data.totalEmissions) {
-      emissions.push(data.totalEmissions);
-    }
-  });
-
-  if (emissions.length === 0) {
-    document.getElementById('dashboardTotal').textContent = "No emissions recorded yet.";
+  const user = auth.currentUser;
+  if (!user) {
+    document.getElementById("dashboardTotal").textContent = "Please log in.";
     return;
   }
 
+  const q = query(collection(db, "users"), where("uid", "==", user.uid));
+  const querySnapshot = await getDocs(q);
+
+  let total = 0;
+  let count = 0;
+  querySnapshot.forEach(doc => {
+    total += doc.data().totalEmissions;
+    count++;
+  });
+
+  if (count === 0) {
+    document.getElementById("dashboardTotal").textContent = "No emissions recorded yet.";
+  } else {
+    document.getElementById("dashboardTotal").textContent =
+      `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${count} report(s))`;
+  }
+
+		
   // Total emissions
   let total = emissions.reduce((a, b) => a + b, 0);
   document.getElementById('dashboardTotal').textContent =
@@ -236,6 +241,7 @@
 <script src="script_unza.js" defer></script>
 </body>
 </html>
+
 
 
 
