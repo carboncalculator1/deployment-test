@@ -118,8 +118,8 @@
 
   <script>
     async function loadDashboard() {
-  // Get Firebase from global object const 
-		{ db, collection, getDocs } = window.firebaseDeps; 
+  // Get Firebase from global object 
+		const { db, collection, getDocs } = window.firebaseDeps; 
 		// Get all docs from cookingResults 
 		const snapshot = await getDocs(collection(db, "users")); 
 		let emissions = []; 
@@ -234,6 +234,7 @@
 <script src="script_unza.js" defer></script>
 </body>
 </html>
+
 
 
 
