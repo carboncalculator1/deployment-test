@@ -142,14 +142,20 @@
       flex-direction: column;
       gap: 10px;
       align-items: center;
+      width: 100%;           /* Make form take full container width */
+      max-width: 500px;      /* Control how wide the form grows */
+      margin: 0 auto;        /* Keep it centered inside container */
     }
     .auth-form.active {
       display: flex;
     }
     .auth-form input {
-      padding: 10px;
+      width: 100%;           /* Inputs and buttons span full form width */
+      max-width: 500px;      /* Optional: limit width */
+      padding: 12px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     .error-message {
       color: red;
@@ -159,6 +165,7 @@
   </style>
 </body>
 </html>
+
 
 
 
