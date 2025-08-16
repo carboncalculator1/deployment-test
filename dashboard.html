@@ -121,7 +121,13 @@
   // Get Firebase from global object 
 		const { db, collection, getDocs } = window.firebaseDeps; 
 		// Get all docs from cookingResults 
-		const snapshot = await getDocs(collection(db, "users")); 
+		const user = window.firebaseDeps.auth.currentUser;
+		if (!user) {
+  		document.getElementById('dashboardTotal').textContent = "Please log in.";
+ 		 return;
+		}
+		const q = query(collection(db, "users"), where("uid", "==", user.uid));
+		const snapshot = await getDocs(q);
 		let emissions = []; 
 		snapshot.forEach(doc => { 
 			let data = doc.data(); 
@@ -234,6 +240,7 @@
 <script src="script_unza.js" defer></script>
 </body>
 </html>
+
 
 
 
