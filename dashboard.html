@@ -225,15 +225,18 @@
       alert("Error logging out. Check console for details.");
     });
   });
+		// Run when page loads
+  window.onload = loadDashboard;
 	// expose for your non-module script.js
   window.firebaseDeps = { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth };
-	// Run when page loads
-	window.onload = loadDashboard;
+
 </script>
 
+	
 <script src="script_unza.js" defer></script>
 </body>
 </html>
+
 
 
 
