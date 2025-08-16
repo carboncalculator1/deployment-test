@@ -144,7 +144,7 @@
             legend: { display: false },
             title: {
               display: true,
-              text: 'Year Emissions Records'
+              text: 'Yearly Emissions Records'
             }
           },
           scales: {
@@ -158,7 +158,7 @@
             x: {
               title: {
                 display: true,
-                text: 'Year'
+                text: 'Years'
               }
             }
           }
@@ -180,5 +180,42 @@
 
     window.onload = loadDashboard;
   </script>
+
+  <!-- Script for authentication -->
+<script type="module">
+ 
+  const firebaseConfig = {
+    apiKey: "AIzaSyCI0zbu9vXg4j26loOHVExJSoEee-7E7LU",
+    authDomain: "unza-s-site.firebaseapp.com",
+    projectId: "unza-s-site",
+    storageBucket: "unza-s-site.firebasestorage.app",
+    messagingSenderId: "691190316366",
+    appId: "1:691190316366:web:da52c76c6f6380faccb21f",
+  };
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
+    getIdTokenResult
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, addDoc,
+    collection, collectionGroup, query, orderBy, getDocs, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+  import { getFunctions, httpsCallable }
+    from "https://www.gstatic.com/firebasejs/10.12.4/firebase-functions.js";
+
+  const app = initializeApp(firebaseConfig);
+  window.firebaseDeps = {
+    app,
+    auth: getAuth(app),
+    db: getFirestore(app),
+    functions: getFunctions(app),
+    // helpers re-exported for convenience:
+    onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, getIdTokenResult,
+    doc, setDoc, getDoc, addDoc, collection, collectionGroup, query, orderBy, getDocs, serverTimestamp, httpsCallable
+  };
+</script>
 </body>
 </html>
