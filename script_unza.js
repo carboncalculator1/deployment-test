@@ -181,7 +181,6 @@ async function loadDashboard() {
         }
       });
     }
-}
 
 
 
@@ -210,6 +209,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("dashboardTotal").textContent = "Please log in.";
   }
 });
+
 
 
 
