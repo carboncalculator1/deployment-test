@@ -87,6 +87,12 @@ function displayResults(data) {
 
     document.getElementById('results').classList.add('active');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+        // Save results to localStorage for dashboard
+    let storedEmissions = JSON.parse(localStorage.getItem('emissionReports')) || [];
+    storedEmissions.push(data.total);
+    localStorage.setItem('emissionReports', JSON.stringify(storedEmissions));
+
 }
 
 function getIconForCategory(category) {
