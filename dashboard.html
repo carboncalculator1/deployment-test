@@ -117,12 +117,12 @@
   
 
   <script>
-    function loadDashboard() {
-      let storedEmissions = JSON.parse(localStorage.getItem('emissionReports')) || [];
-      if (storedEmissions.length === 0) {
-        document.getElementById('dashboardTotal').textContent = "No emissions recorded yet.";
-        return;
-      }
+    async function loadDashboard() {
+  const user = auth.currentUser;
+  if (!user) {
+    document.getElementById("dashboardTotal").textContent = "Please log in.";
+    return;
+  }
 
       // Total emissions
       let total = storedEmissions.reduce((a, b) => a + b, 0);
@@ -225,6 +225,7 @@
 <script src="script_unza.js" defer></script>
 </body>
 </html>
+
 
 
 
