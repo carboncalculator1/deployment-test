@@ -20,6 +20,8 @@
       UNZA Carbon Calculator Yanga - Home
     </h1>
 
+		
+
     <!-- Dashboard Body -->
     <div id="dashboardContent" class="section active">
       <h2>Total Annual Emissions</h2>
@@ -106,6 +108,7 @@
     </div>
 	  
     <p class="footer-text">A climate awareness and action initiative by: <strong>Carbon Calculator Yanga Foundation, © 2025</strong></p>
+	  <button id="logoutBtn" class="btn-logout">Logout</button>
   </div>
 </footer>
 </div>
@@ -180,7 +183,26 @@
 
     window.onload = loadDashboard;
   </script>
+
+	<!-- signout button -->
+	<script type="module">
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const auth = getAuth();
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    signOut(auth).then(() => {
+      // Redirect to login
+      window.location.href = "login.html";
+    }).catch((error) => {
+      console.error("Error logging out:", error);
+      alert("Error logging out. Check console for details.");
+    });
+  });
+</script>
+
 </body>
 </html>
+
 
 
