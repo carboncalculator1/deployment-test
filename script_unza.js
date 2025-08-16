@@ -1,3 +1,5 @@
+// get Firebase things from the global
+const { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth } = window.firebaseDeps;
 let currentSection = 'cooking';
 let calculationData = {};
 
@@ -114,7 +116,6 @@ function displayResults(data) {
 }
 
 //Update your dashboard to read from Firestore, not localStorage.
-import { getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 async function loadDashboard() {
   const user = auth.currentUser;
@@ -156,6 +157,7 @@ function getIconForCategory(category) {
 
     return `<i class="${icons[category] || 'fas fa-circle'}"></i>`;
 }
+
 
 
 
