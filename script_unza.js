@@ -3,7 +3,7 @@ const { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth } =
 let currentSection = 'cooking';
 let calculationData = {};
 
- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 function showSection(section) {
     document.getElementById(currentSection).classList.remove('active');
@@ -141,48 +141,7 @@ async function loadDashboard() {
     document.getElementById("dashboardTotal").textContent =
       `Total Emissions: ${total.toFixed(1)} kg CO₂e (from ${count} report(s))`;
   }
-
-    // Build bar chart
-      const ctx = document.getElementById('emissionsChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: storedEmissions.map((_, i) => `Year ${i + 1}`),
-          datasets: [{
-            label: 'Emissions (kg CO₂e)',
-            data: storedEmissions,
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: {
-              display: true,
-              text: 'Yearly Emissions Records'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'kg CO₂e'
-              }
-            },
-            x: {
-              title: {
-                display: true,
-                text: 'Years'
-              }
-            }
-          }
-        }
-      });
-    }
+}
 
 
 
@@ -211,6 +170,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("dashboardTotal").textContent = "Please log in.";
   }
 });
+
 
 
 
