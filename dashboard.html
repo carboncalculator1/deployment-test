@@ -186,11 +186,14 @@
     window.onload = loadDashboard;
   </script>
 
-	<!-- signout button -->
+	<!-- signout button and storage -->
 	<script type="module">
   // Import the Firebase modules
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   // Your web app's Firebase configuration
   const firebaseConfig = {
@@ -204,6 +207,7 @@
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
   const auth = getAuth(app);
 
   // Logout button
@@ -215,11 +219,10 @@
       alert("Error logging out. Check console for details.");
     });
   });
+	// expose for your non-module script.js
+  window.firebaseDeps = { db, collection, addDoc, getDocs, query, where, serverTimestamp, auth };
 </script>
 </body>
 </html>
-
-
-
 
 
